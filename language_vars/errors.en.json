@@ -1,0 +1,12 @@
+{
+    "unspecified": "Error type not specified. See the message for details.",
+    "invalid_api_key": "An invalid API access key is specified. Check if the value of api_key matches the value specified in your personal account.",
+    "access_denied": "Access denied. Check if API access is enabled in your personal account and if you are not accessing a method that you do not have access rights to.",
+    "unknown_method": "An invalid method name is specified.",
+    "invalid_arg": "An invalid value of one of the method arguments is specified.",
+    "not_enough_money": "Not enough money in the account to execute the method.",
+    "retry_later": "Temporary failure. Try again later.",
+    "api_call_limit_exceeded_for_api_key": "The API method invocation limit per unit of time has been triggered. At the moment it is 1200 calls per minute. For the sendEmail method it is 60.",
+    "api_call_limit_exceeded_for_ip": "The API method invocation limit per unit of time has been triggered. At the moment it is 1200 calls per minute. For the sendEmail method, it's 60.",
+    "empty_params": "There are no required parameters to make a request."
+}

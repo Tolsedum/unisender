@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mailing\Unisender\Enum;
+namespace App\Mailing\unisender\Enum;
 
 class DoubleOption{
     /**

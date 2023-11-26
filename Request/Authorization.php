@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Mailing\Unisender\Request;
+namespace App\Mailing\unisender\Request;
 
-class Authorization{
+use App\Mailing\unisender\Api\ApiTools;
+
+class Authorization extends ApiTools{
     /** @var string API access key */
     protected $api_key;
     /** @var string API server message language (currently supported ru, en, ua) */
