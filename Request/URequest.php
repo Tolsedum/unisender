@@ -9,7 +9,6 @@ use App\Mailing\unisender\Api\traits\Messages;
 use App\Mailing\unisender\Api\traits\Notes;
 use App\Mailing\unisender\Api\traits\Statistics;
 use App\Mailing\unisender\Api\traits\Templates;
-use PDO;
 
 class URequest extends Authorization{
     use Contacts;
@@ -19,22 +18,47 @@ class URequest extends Authorization{
     use Statistics;
     use Templates;
 
-    public function __construct(string $api_key = "5", string $lang = "ru"){
+    public function __construct(string $api_key, string $lang = "ru"){
         parent::__construct($api_key, $lang);
     }
 
-    private function generateParamsToString($params = [], $name_main_field = ""){
+    private function recursiveForString($params, $name_field = ""){
+        static $iter = 0;
         $ret_value = "";
         if(!empty($params)){
             foreach ($params as $key => $value) {
                 if(is_array($value)){
-                    $ret_value .= $this->generateParamsToString($value, $key);
-                }else{
-                    if(empty($name_main_field)){
-                        $ret_value .= "&" . $key ."=".$value;
+                    $iter++;
+                    $ret_value .= $this->recursiveForString($value, $key);
+                    $iter--;
+                    if($iter == 0){
+                        $ret_value = "&{$name_field}" . $ret_value;
+                        
                     }else{
-                        $ret_value .= "&" . "{$name_main_field}[{$key}]" ."=".$value;
+                        $ret_value = "[{$key}]" . $ret_value;
                     }
+                }else{
+                    if($iter == 0){
+                        $ret_value .= "&{$name_field}[{$key}]" . "=" . $value;
+                    }else{
+                        $ret_value .= "[{$key}]" . "=" . $value;
+                    }
+                }
+            }
+        }
+        return $ret_value;
+    }
+    
+    private function generateParamsToString($params = []){
+        $ret_value = "";
+        if(!empty($params)){
+            foreach ($params as $name_main_field => $value) {
+                if(is_array($value)){
+                    $ret_value .=  $this->recursiveForString(
+                        $value, $name_main_field
+                    );
+                }else{
+                    $ret_value .= "&" . $name_main_field ."=".$value;
                 }
             }
         }
@@ -64,6 +88,5 @@ class URequest extends Authorization{
             $url = $this->getRequestUrl($methode_data["url"], $request_params);
             return ["url" => $url, "request_params" => []];
         }
-        dd($methode, $args);
     }
 }
