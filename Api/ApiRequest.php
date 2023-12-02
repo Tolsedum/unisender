@@ -1,4 +1,35 @@
 <?php
+/**
+ *  __________________________________________ 
+ * |                                          |
+ * |   ╭━━━━┳━━━┳╮╱╱╭━━━┳━━━┳━━━┳╮╱╭┳━╮╭━╮    |
+ * |   ┃╭╮╭╮┃╭━╮┃┃╱╱┃╭━╮┃╭━━┻╮╭╮┃┃╱┃┃┃╰╯┃┃    |
+ * |   ╰╯┃┃╰┫┃╱┃┃┃╱╱┃╰━━┫╰━━╮┃┃┃┃┃╱┃┃╭╮╭╮┃    |
+ * |   ╱╱┃┃╱┃┃╱┃┃┃╱╭╋━━╮┃╭━━╯┃┃┃┃┃╱┃┃┃┃┃┃┃    |
+ * |   ╱╱┃┃╱┃╰━╯┃╰━╯┃╰━╯┃╰━━┳╯╰╯┃╰━╯┃┃┃┃┃┃    |
+ * |   ╱╱╰╯╱╰━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻╯╰╯╰╯    |
+ * |__________________________________________|
+ * |                                          |
+ * | Permission is hereby granted, free of    |
+ * | charge, to any person obtaining a copy of|
+ * | of this software and accompanying files, |
+ * | to use them without restriction,         |
+ * | including, without limitation, the       |
+ * | rights to use, copy, modify, merge,      |
+ * | publish, distribute, sublicense and/or   |
+ * | sell copies of the software. The authors |
+ * | or copyright holders shall not be liable |
+ * | for any claims, damages or other         |
+ * | liability, whether in contract, tort or  |
+ * | otherwise, arising out of or in          |
+ * | connection with the software or your use |
+ * | or other dealings with the software.     |
+ * |__________________________________________|
+ * |   website: tolsedum.ru                   |
+ * |   email: tolsedum@gmail.com              |
+ * |   email: tolsedum@yandex.ru              |
+ * |__________________________________________|
+ */
 
 namespace App\Mailing\unisender\Api;
 
@@ -9,7 +40,12 @@ use App\Mailing\unisender\Api\traits\Notes;
 use App\Mailing\unisender\Api\traits\Statistics;
 use App\Mailing\unisender\Api\traits\Templates;
 use App\Mailing\unisender\Api\ApiTools;
+use App\Mailing\unisender\ExceptionUnisender;
 
+/**
+ * Объеденяет в себе все traits, для разделения логики (чтобы не одной партянкой)
+ * @author Tolsedum
+ */
 class ApiRequest extends ApiTools{
     use Contacts;
     use Fields;
@@ -20,8 +56,8 @@ class ApiRequest extends ApiTools{
 
 
     public function __call($methode, $args){
-        $params = isset($args[0]) ? $args[0] : [];
-        if($methode !== "compresData"){
+        if(method_exists($this, $methode)){
+            $params = isset($args[0]) ? $args[0] : [];
             $methode_data = $this->{$methode}($params);
             list($field_exist, $field_missing) = $this->checkFields(
                 $methode_data["pattern"], $params
@@ -35,9 +71,13 @@ class ApiRequest extends ApiTools{
                 "url_part" => $methode_data["url"],
                 "data" =>  $request_params,
                 "extra" => [
-                    "header" => "Content-type: application/x-www-form-urlencoded",
+                    "headers" => [
+                        "Content-type: application/x-www-form-urlencoded"
+                    ],
                 ],
             ];
+        }else{
+            throw new ExceptionUnisender(ExceptionUnisender::METHOD_IS_NOT_EXISTS);
         }
     }
 }

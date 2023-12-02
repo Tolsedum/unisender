@@ -1,4 +1,5 @@
 {
+    "method_is_not_exists": "Calling method is not exists.",
     "unspecified": "Error type not specified. See the message for details.",
     "invalid_api_key": "An invalid API access key is specified. Check if the value of api_key matches the value specified in your personal account.",
     "access_denied": "Access denied. Check if API access is enabled in your personal account and if you are not accessing a method that you do not have access rights to.",
