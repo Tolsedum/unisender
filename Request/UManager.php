@@ -47,14 +47,27 @@ class UManager implements IApiRequest{
 
     protected ApiRequest $apiRequest;
 
-    public function __construct(
-        string $api_key, 
-        string $lang = "ru", 
-        $compression = false
-    ){
-        $this->api_key = $api_key;
-        $this->lang = $lang;
-        $this->compression = $compression;
+    /**
+     * @param string $api_key 
+     * @param string $lang
+     * @param bool $compression
+     */
+    public function __construct(array $param){
+        if(empty($param["api_key"])){
+            throw new ExceptionUnisender(ExceptionUnisender::INVALID_API_KEY);
+        }else{
+            $this->api_key = $param["api_key"];
+        }
+        foreach ([
+            "lang" => "ru",
+            "compression" => false
+        ] as $_param => $default) {
+            if(isset($param[$_param])){
+                $this->{$_param} = $param[$_param];
+            }else{
+                $this->{$_param} = $default;
+            }
+        }
         $this->apiRequest = new ApiRequest(); 
     }
 
@@ -139,6 +152,29 @@ class UManager implements IApiRequest{
      */
     public function updateContactList(array $param){
         $request_data = $this->apiRequest->updateList($param);
+        return $this->getReturnParams($request_data);
+    }
+
+    /**
+     * Подписать адресата на один или несколько списков рассылки
+     * @return array [
+     *      url => url запроса
+     *      название параметра => обязательный ли он
+     * 
+     *      string list_ids => Перечисленные через запятую коды списков, 
+     *                  в которые надо добавить контакта
+     *      array fields   => Ассоциативный массив дополнительных полей.
+     *                  Массив в запросе передаётся строкой вида 
+     *                  fields[NAME1]=VALUE1&fields[NAME2]=VALUE2
+     *      array tags     => Перечисленные через запятую метки, которые 
+     *                  добавляются к контакту. Максимально допустимое 
+     *                  количество - 10 меток.
+     *      int double_optin => const DoubleOption
+     *      int overwrite => Режим перезаписывания полей и меток const OverwriteMode
+     * ]
+     */
+    public function subscribeContact(array $param){
+        $request_data = $this->apiRequest->subscribe($param);
         return $this->getReturnParams($request_data);
     }
 }

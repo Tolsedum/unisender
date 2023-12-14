@@ -55,7 +55,7 @@ class ApiTools{
         $field_missing = [];
         if(!empty($pattern)){
             foreach ($pattern as $field => $compulsory) {
-                if($this->is_not_empty($params[$field])){
+                if(isset($params[$field]) && $this->is_not_empty($params[$field])){
                     $field_exist[$field] = $compulsory;
                 }else{
                     $field_missing[$field] = $compulsory;
@@ -73,7 +73,7 @@ class ApiTools{
         }
         $request_params = [];
         foreach ($field_exist as $var => $compulsory) {
-            if($this->is_not_empty($params[$var])){
+            if(isset($params[$var]) && $this->is_not_empty($params[$var])){
                 $request_params[$var] = $params[$var];
             }
         }
