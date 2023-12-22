@@ -175,6 +175,11 @@ class UManager implements IApiRequest{
      */
     public function subscribeContact(array $param){
         $request_data = $this->apiRequest->subscribe($param);
+        if(isset($request_data["data"]["fields"]["name"])){
+            $request_data["data"]["fields"]["Name"] = 
+                $request_data["data"]["fields"]["name"];
+            unset($request_data["data"]["fields"]["name"]);
+        }
         return $this->getReturnParams($request_data);
     }
 }
