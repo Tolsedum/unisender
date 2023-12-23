@@ -46,14 +46,13 @@ use App\Mailing\unisender\ExceptionUnisender;
  * Объеденяет в себе все traits, для разделения логики (чтобы не одной партянкой)
  * @author Tolsedum
  */
-class ApiRequest extends ApiTools{
+class ApiDataRequest extends ApiTools{
     use Contacts;
     use Fields;
     use Messages;
     use Notes;
     use Statistics;
     use Templates;
-
 
     public function __call($methode, $args){
         if(method_exists($this, $methode)){

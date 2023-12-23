@@ -34,7 +34,7 @@
 namespace App\Mailing\unisender\Request;
 
 use App\Mailing\IApiRequest;
-use App\Mailing\unisender\Api\ApiRequest;
+use App\Mailing\unisender\Api\ApiDataRequest;
 use App\Mailing\unisender\ExceptionUnisender;
 
 class UManager implements IApiRequest{
@@ -45,7 +45,7 @@ class UManager implements IApiRequest{
     /** @var bool  */
     protected $compression = false;
 
-    protected ApiRequest $apiRequest;
+    protected ApiDataRequest $apiRequest;
 
     /**
      * @param string $api_key 
@@ -68,21 +68,19 @@ class UManager implements IApiRequest{
                 $this->{$_param} = $default;
             }
         }
-        $this->apiRequest = new ApiRequest(); 
+        $this->apiRequest = new ApiDataRequest(); 
     }
 
     /**
      * Get unisender api host
      * @return string
      */
-    protected function getApiHost(){
-        return sprintf('https://api.unisender.com/%s/api/', $this->lang);
+    protected function getApiHost($methode){
+        return sprintf('https://api.unisender.com/%s/api/%s?format=json', $this->lang, $methode);
     }
 
     protected function getRequestUrl($methode){
-        $url = $this->getApiHost()
-            . $methode 
-            . "?format=json";
+        $url = $this->getApiHost($methode);
 
         if ($this->compression) {
             $url .= '&request_compression=bzip2';
